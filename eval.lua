@@ -9,6 +9,7 @@ require 'misc.DataLoader'
 require 'misc.DataLoaderRaw'
 require 'misc.LanguageModel'
 local net_utils = require 'misc.net_utils'
+require 'misc.Reranker'
 
 -------------------------------------------------------------------------------
 -- Input arguments and options
@@ -110,6 +111,7 @@ local function eval_split(split, evalopt)
   local loss_sum = 0
   local loss_evals = 0
   local predictions = {}
+  local reranker = nn.Reranker(opt, 'models/VGG_ILSVRC_19_layers_deploy.prototxt', 'models/VGG_ILSVRC_19_layers.caffemodel')
   while true do
 
     -- fetch a batch of data
@@ -132,7 +134,12 @@ local function eval_split(split, evalopt)
 
     -- forward the model to also get generated samples for each image
     local sample_opts = { sample_max = opt.sample_max, beam_size = opt.beam_size, temperature = opt.temperature }
-    local seq = protos.lm:sample(feats, sample_opts)
+    local seq, seqLogprobs, beams = protos.lm:sample(feats, sample_opts)
+
+    -- rerank the beam search candidate 
+    seq = reranker:rank(beams)
+
+    -- dump result
     local sents = net_utils.decode_sequence(vocab, seq)
     for k=1,#sents do
       local entry = {image_id = data.infos[k].id, caption = sents[k]}

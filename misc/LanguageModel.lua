@@ -172,6 +172,7 @@ function layer:sample_beam(imgs, opt)
 
   local seq = torch.LongTensor(self.seq_length, batch_size):zero()
   local seqLogprobs = torch.FloatTensor(self.seq_length, batch_size)
+  local beams = {}
   -- lets process every image independently for now, for simplicity
   for k=1,batch_size do
 
@@ -272,10 +273,11 @@ function layer:sample_beam(imgs, opt)
     table.sort(done_beams, compare)
     seq[{ {}, k }] = done_beams[1].seq -- the first beam has highest cumulative score
     seqLogprobs[{ {}, k }] = done_beams[1].logps
+    table.insert(beams, done_beams)
   end
 
   -- return the samples and their log likelihoods
-  return seq, seqLogprobs
+  return seq, seqLogprobs, beams
 end
 
 --[[

@@ -137,7 +137,7 @@ local function eval_split(split, evalopt)
     local seq, seqLogprobs, beams = protos.lm:sample(feats, sample_opts)
 
     -- rerank the beam search candidate 
-    seq = reranker:rank(beams)
+    seq = reranker:rank(beams, data.images)
 
     -- dump result
     local sents = net_utils.decode_sequence(vocab, seq)

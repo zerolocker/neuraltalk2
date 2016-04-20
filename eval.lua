@@ -111,7 +111,7 @@ local function eval_split(split, evalopt)
   local loss_sum = 0
   local loss_evals = 0
   local predictions = {}
-  local reranker = nn.Reranker(opt, 'models/VGG_ILSVRC_19_layers_deploy.prototxt', 'models/VGG_ILSVRC_19_layers.caffemodel')
+  local reranker = nn.Reranker(opt, 'models/VGG_ILSVRC_19_layers_deploy.prototxt', 'models/VGG_ILSVRC_19_layers.caffemodel', protos.lm.lookup_table, vocab, protos.lm.vocab_size)
   while true do
 
     -- fetch a batch of data
@@ -137,7 +137,7 @@ local function eval_split(split, evalopt)
     local seq, seqLogprobs, beams = protos.lm:sample(feats, sample_opts)
 
     -- rerank the beam search candidate 
-    if(beams~=nil) then seq = reranker:rank(beams, vocab, data.images) end
+    if(beams~=nil) then seq = reranker:rank(beams, data.images) end
 
     -- dump result
     local sents = net_utils.decode_sequence(vocab, seq)

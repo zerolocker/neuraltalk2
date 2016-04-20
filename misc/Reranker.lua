@@ -5,7 +5,7 @@ require 'loadcaffe'
 
 local Reranker, parent = torch.class('nn.Reranker', 'nn.Module')
 
-function Reranker:__init(params, proto_file, model_file)
+function Reranker:__init(params, proto_file, model_file, word2vec, vocab, vocab_size)
   parent.__init(self)
 
   -- load VGG
@@ -42,29 +42,83 @@ function Reranker:__init(params, proto_file, model_file)
     end
   end
 
+  -- set up vocabuary and inverse vocabulary
+  self.vocab = vocab
+  self.inv_vocab = {}
+  for i = 1, vocab_size do
+    self.inv_vocab[vocab[tostring(i)]] = i
+  end
+
+  -- TODO:
+  -- currently the word2vec function is the learned embedding of Karpathy's alignment model
+  -- may use Google's word2vec trained on other corpus(billions of words)
+  -- but which one is better?
+  self.word2vec = word2vec
+
   -- load ILSVRC12 synset_word
   self.synset_words = {}
   for line in io.lines'models/synset_words.txt' do
-    table.insert(self.synset_words, line:sub(11))
+    line = line:sub(11)
+    phrases = {}
+    for phrase in string.gmatch(line, '([^,]+)') do
+      table.insert(phrases, phrase)
+    end
+    table.insert(self.synset_words, phrases)
   end
+  --print(self.synset_words)
 
+  -- TODO: 
+  -- map ILSVRC12 synset_word to vector representation
+  -- not a perfect method
+  self.synset_vecs = {}
+  local l = 0
+  for line in io.lines'models/synset_words.txt' do
+    line = line:sub(11)
+    words = {}
+    for phrase in string.gmatch(line, '([^,]+)') do
+      for word in string.gmatch(phrase, '([^ ]+)') do
+        if (self.inv_vocab[word] == nil) then
+          print(word .. ' is out of vocabulary')
+        else
+          table.insert(words, self.inv_vocab[word])
+        end
+      end
+    end
+
+    if (#words > 0) then
+      local vecs = self.word2vec:forward(torch.Tensor(words))
+      self.synset_vecs[l] = vecs:float() -- entries will have same size if using cudaTensor, why?
+    end
+    l = l + 1
+  end
 end
 
 
-function Reranker:rank(beams, vocab, images)
-  batchSize = #beams
-  seq = torch.LongTensor(beams[1][1].seq:size(1), batchSize)
+function Reranker:rank(beams, images)
+  local batchSize = #beams
+  local seq = torch.LongTensor(beams[1][1].seq:size(1), batchSize)
 
   -- TODO: implement reranking
   for k = 1, batchSize do
-    pred = self.cnn:forward(images[k])
-
+    local pred = self.cnn:forward(images[k])
     for i = 1, #beams[k] do
-      candidate = beams[k][i].seq
-      for j = 1, candidate:size(1) do
-        --print(candidate[j])
-        --print(vocab[candidate[j]])
+      local logP2 = 0
+      local sent = beams[k][i].seq
+      local sentVec = self.word2vec:forward(sent)
+      local n = 0
+      for j = 1, sent:size(1) do
+        if (self.vocab[tostring(sent[j])] ~= nil and self.inv_vocab[sent[j]] ~= nil) then
+        local label = nearestNeighbor(sentVec[j], self.synset_vecs)
+        logP2 = logP2 + log(pred[label])
+        n = n + 1
+  --      print(candidate[j])
+  --      print(candVec[j])
+  --      print(vocab[tostring(candidate[j])])
+        end
       end
+  --    print(' ')
+      alpha = 0.5
+      local P = torch.exp(beams[k][i].p) * alpha + torch.pow(torch.exp(logP2),n) * (1-alpha)
     end
 
     seq[{ {}, k }] = beams[k][1].seq

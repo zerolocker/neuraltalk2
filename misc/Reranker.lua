@@ -78,7 +78,7 @@ function Reranker:__init(params, proto_file, model_file, word2vec, vocab, vocab_
     for phrase in string.gmatch(line, '([^,]+)') do
       for word in string.gmatch(phrase, '([^ ]+)') do
         if (self.inv_vocab[word] == nil) then
-          print(word .. ' is out of vocabulary')
+--          print(word .. ' is out of vocabulary')
         else
           table.insert(words, self.inv_vocab[word])
         end
@@ -103,20 +103,17 @@ function Reranker:rank(beams, images)
     local pred = self.cnn:forward(images[k])
     for i = 1, #beams[k] do
       local logP2 = 0
-      local sent = beams[k][i].seq
+      local sent = beams[k][i].seq     
       local sentVec = self.word2vec:forward(sent)
       local n = 0
+      local sent_str = ''
       for j = 1, sent:size(1) do
-        if (self.vocab[tostring(sent[j])] ~= nil and self.inv_vocab[sent[j]] ~= nil) then
-        local label = nearestNeighbor(sentVec[j], self.synset_vecs)
-        logP2 = logP2 + log(pred[label])
+        local label = 1 --nearestNeighbor(sentVec[j], self.synset_vecs)
+        logP2 = logP2 + torch.log(pred[label])
         n = n + 1
-  --      print(candidate[j])
-  --      print(candVec[j])
-  --      print(vocab[tostring(candidate[j])])
-        end
+ 	sent_str = sent_str .. ' ' .. (self.vocab[tostring(sent[j])]==nil and 'nil' or self.vocab[tostring(sent[j])])
       end
-  --    print(' ')
+      print(sent_str,'logProb2:' ..  logP2)
       alpha = 0.5
       local P = torch.exp(beams[k][i].p) * alpha + torch.pow(torch.exp(logP2),n) * (1-alpha)
     end

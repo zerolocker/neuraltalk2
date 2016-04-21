@@ -110,10 +110,11 @@ function Reranker:rank(beams, images)
       for j = 1, sent:size(1) do
         local label = 1 --nearestNeighbor(sentVec[j], self.synset_vecs)
         logP2 = logP2 + torch.log(pred[label])
+        
         n = n + 1
- 	sent_str = sent_str .. ' ' .. (self.vocab[tostring(sent[j])]==nil and 'nil' or self.vocab[tostring(sent[j])])
+ 	sent_str = sent_str .. ' ' .. (self.vocab[tostring(sent[j])]==nil and 'nil'..sent[j] or self.vocab[tostring(sent[j])])
       end
-      print(sent_str,'logProb2:' ..  logP2)
+      print(sent_str,'logProb: ' .. beams[k][i].p)
       alpha = 0.5
       local P = torch.exp(beams[k][i].p) * alpha + torch.pow(torch.exp(logP2),n) * (1-alpha)
     end

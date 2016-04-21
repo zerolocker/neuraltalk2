@@ -1,0 +1,285 @@
+从这几张图生成的得到的结论：
+COCO_val2014_000000031000.jpg
+COCO_val2014_000000152740.jpg
+COCO_val2014_000000210273.jpg
+COCO_val2014_000000322369.jpg
+COCO_val2014_000000556726.jpg
+IMG_0367.JPG
+
+beam-search-size == 10:
+ a sandwich sitting on top of a white plate nil9568 nil0 nil0 nil0 nil0 nil0 nil0       logProb: -5.4282078742981
+ a close up of a sandwich on a plate nil9568 nil0 nil0 nil0 nil0 nil0 nil0      logProb: -5.7571873664856
+ a sandwich and a drink on a table nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logProb: -6.1791915893555
+ a close up of a sandwich on a plate nil9568 a drink nil9568 nil0 nil0 nil0     logProb: -6.9773445129395
+ a sandwich sitting on top of a plate nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0        logProb: -7.0530877113342
+ a sandwich on a plate with a drink nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logProb: -7.7730274200439
+ a sandwich sitting on top of a plate on a table nil9568 nil0 nil0 nil0 nil0    logProb: -8.0833139419556
+ a close up of a sandwich on a plate nil9568 a drink nil9568 nil9568 nil0 nil0  logProb: -8.1850748062134
+ a sandwich sitting on top of a white plate nil9568 a cup of coffee nil9568 nil0        logProb: -8.3486824035645
+ a sandwich sitting on top of a white plate nil9568 a cup of coffee nil9568 nil9568     logProb: -8.4337425231934
+ a close up of a sandwich on a plate nil9568 a cup of coffee nil9568 nil0       logProb: -8.4496974945068
+ a close up of a sandwich on a plate nil9568 a drink nil9568 nil9568 nil9568 nil0       logProb: -8.4614381790161
+ a close up of a sandwich on a plate nil9568 a cup of coffee nil9568 nil9568    logProb: -8.463493347168
+ a close up of a sandwich on a plate nil9568 a drink nil9568 nil9568 nil9568 nil9568    logProb: -8.4707918167114
+ a sandwich sitting on top of a plate next to a cup of coffee nil9568 nil0      logProb: -8.6911582946777
+ a sandwich sitting on top of a plate next to a cup of coffee nil9568 nil9568   logProb: -8.7152061462402
+ a sandwich sitting on top of a white plate nil9568 a glass of wine nil9568 nil0        logProb: -9.334192276001
+ a sandwich sitting on top of a white plate nil9568 a glass of beer nil9568 nil0        logProb: -9.3503360748291
+ a sandwich sitting on top of a white plate nil9568 a glass of beer nil9568 nil9568     logProb: -9.3850498199463
+ a sandwich sitting on top of a white plate nil9568 a glass of wine nil9568 nil9568     logProb: -9.4453773498535
+ a close up of a sandwich on a plate nil9568 a drink nil9568 a cup nil9568      logProb: -9.6289434432983
+ a close up of a sandwich on a plate nil9568 a drink nil9568 a drink nil9568    logProb: -9.8932037353516
+ a sandwich sitting on top of a white plate nil9568 a drink and a cup nil9568   logProb: -10.026437759399
+ a sandwich sitting on top of a white plate nil9568 a cup of coffee and nil9568 logProb: -10.531982421875
+cp "myimg/COCO_val2014_000000322369.jpg" vis/imgs/img1.jpg
+image 1: a sandwich sitting on top of a white plate
+
+evaluating performance... 1/7 (0.000000)
+ a herd of cattle grazing on a lush green field nil9568 nil0 nil0 nil0 nil0 nil0        logProb: -4.9123530387878
+ a herd of cows grazing in a field nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logProb: -5.3678374290466
+ a herd of cattle standing on top of a lush green field nil9568 nil0 nil0 nil0  logProb: -5.7714505195618
+ a group of cows grazing in a field nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logProb: -5.9230298995972
+ a herd of cattle grazing on a lush green hillside nil9568 nil0 nil0 nil0 nil0 nil0     logProb: -5.9829516410828
+ a herd of cattle standing on a lush green field nil9568 nil0 nil0 nil0 nil0 nil0       logProb: -6.3101406097412
+ a group of cows standing in a field nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0 logProb: -6.3798189163208
+ a herd of cows grazing in a grassy field nil9568 nil0 nil0 nil0 nil0 nil0 nil0 logProb: -6.3928194046021
+ a herd of cattle grazing in a field nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0 logProb: -6.4528594017029
+ a herd of cows standing in a field nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logProb: -6.6185426712036
+ a herd of cattle grazing on a grass covered field nil9568 nil0 nil0 nil0 nil0 nil0     logProb: -6.7153930664062
+ a herd of cattle grazing on a lush green hillside nil9568 nil9568 nil0 nil0 nil0 nil0  logProb: -7.0269117355347
+ a herd of cattle standing on top of a grass covered field nil9568 nil0 nil0 nil0       logProb: -7.0517516136169
+ a herd of cattle grazing on a lush green field nil9568 a forest nil9568 nil0 nil0      logProb: -7.0930323600769
+ a herd of cattle grazing on a lush green field nil9568 a forest nil9568 nil9568 nil0   logProb: -7.2565059661865
+ a herd of cattle grazing on a lush green field nil9568 a forest nil9568 nil9568 nil9568        logProb: -7.26100730896
+ a herd of cattle standing on top of a lush green hillside nil9568 nil0 nil0 nil0       logProb: -7.4020481109619
+ a herd of cattle standing on top of a lush green hillside nil9568 nil9568 nil0 nil0    logProb: -7.6901059150696
+ a herd of cows grazing in a field nil9568 a mountain range nil9568 nil0 nil0 nil0      logProb: -8.3029823303223
+ a herd of cattle grazing on a lush green field nil9568 trees nil9568 nil0 nil0 nil0    logProb: -8.3876571655273
+ a herd of cows grazing in a field nil9568 a mountain range nil9568 nil9568 nil0 nil0   logProb: -8.4976682662964
+ a herd of cows grazing in a field nil9568 a mountain range nil9568 nil9568 nil9568 nil0        logProb: -8.5159301757812
+ a herd of cows grazing in a field nil9568 a mountain range nil9568 nil9568 nil9568 nil9568     logProb: -8.530104637146
+ a herd of cattle standing on top of a lush green field nil9568 a forest nil9568        logProb: -8.5750465393066
+ a herd of cattle standing on a lush green field nil9568 a forest nil9568 nil0 nil0     logProb: -8.6988620758057
+ a herd of cattle grazing on a lush green field nil9568 a mountain nil9568 nil0 nil0    logProb: -8.7021312713623
+ a herd of cattle standing on top of a lush green field nil9568 trees nil9568 nil0      logProb: -8.7099666595459
+ a herd of cattle grazing on a lush green field nil9568 a mountain nil9568 nil9568 nil0 logProb: -8.7610702514648
+ a herd of cattle grazing on a lush green field nil9568 a mountain nil9568 nil9568 nil9568      logProb: -8.7620878219604
+ a herd of cattle standing on top of a lush green field nil9568 trees nil9568 nil9568   logProb: -8.8268966674805
+ a herd of cattle standing on a lush green field nil9568 a forest nil9568 nil9568 nil0  logProb: -9.0387210845947
+ a herd of cattle standing on a lush green field nil9568 a forest nil9568 nil9568 nil9568       logProb: -9.0480136871338
+ a herd of cattle standing on top of a lush green field nil9568 mountains nil9568 nil0  logProb: -9.1294822692871
+ a herd of cattle standing on top of a lush green field nil9568 mountains nil9568 nil9568       logProb: -9.3745918273926
+ a herd of cattle standing on top of a lush green field nil9568 grass nil9568 nil0      logProb: -9.4267549514771
+ a herd of cattle standing on top of a lush green field nil9568 a tree nil9568  logProb: -9.6512832641602
+ a herd of cattle standing on top of a lush green field nil9568 grass nil9568 nil9568   logProb: -9.8235292434692
+ a herd of cattle standing on top of a lush green hillside nil9568 nil9568 a mountain   logProb: -10.802283287048
+cp "myimg/COCO_val2014_000000152740.jpg" vis/imgs/img2.jpg
+image 2: a herd of cattle grazing on a lush green field
+
+evaluating performance... 2/7 (0.000000)
+ a living room filled with furniture and a fireplace nil9568 nil0 nil0 nil0 nil0 nil0 nil0      logProb: -6.0906791687012
+ a living room filled with furniture and a fire place nil9568 nil0 nil0 nil0 nil0 nil0  logProb: -6.0934176445007
+ a living room filled with lots of furniture nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0 logProb: -6.3166189193726
+ a living room filled with furniture and a flat screen tv nil9568 nil0 nil0 nil0 nil0   logProb: -6.3811597824097
+ a living room filled with furniture and a tv nil9568 nil0 nil0 nil0 nil0 nil0 nil0     logProb: -6.4332032203674
+ a living room with a couch and a table nil9568 nil0 nil0 nil0 nil0 nil0 nil0   logProb: -6.8765182495117
+ a living room filled with furniture and a large window nil9568 nil0 nil0 nil0 nil0 nil0        logProb: -7.2452073097229
+ a living room filled with furniture and a fireplace nil9568 nil9568 nil0 nil0 nil0 nil0 nil0   logProb: -7.3848781585693
+ a living room filled with furniture and a fire place nil9568 a fireplace nil9568 nil0 nil0     logProb: -8.2738513946533
+ a living room with a couch a table and a television nil9568 nil0 nil0 nil0 nil0        logProb: -8.327977180481
+ a living room filled with furniture and a fire place nil9568 a fireplace nil9568 nil9568 nil0  logProb: -8.3870086669922
+ a living room filled with furniture and a fire place nil9568 a fireplace nil9568 nil9568 nil9568       logProb: -8.4099206924438
+ a living room with a couch a table and a tv nil9568 nil0 nil0 nil0 nil0        logProb: -8.4717664718628
+ a living room with a couch a table and a television nil9568 nil9568 nil0 nil0 nil0     logProb: -8.5212659835815
+ a living room filled with lots of furniture and a tv nil9568 nil0 nil0 nil0 nil0       logProb: -8.7112064361572
+ a living room filled with furniture and a flat screen tv nil9568 a fireplace nil9568 nil0      logProb: -8.8544483184814
+ a living room filled with furniture and a flat screen tv nil9568 a fireplace nil9568 nil9568   logProb: -9.0761289596558
+ a living room with a couch a table and a television nil9568 nil9568 nil9568 nil0 nil0  logProb: -9.3498754501343
+ a living room filled with furniture and a flat screen tv nil9568 a window nil9568 nil0 logProb: -9.3768844604492
+ a living room filled with furniture and a fireplace nil9568 nil9568 windows nil9568 nil0 nil0 nil0     logProb: -9.4357805252075
+ a living room with a couch a table and a television nil9568 nil9568 nil9568 nil9568 nil0       logProb: -9.4428987503052
+ a living room with a couch a table and a television nil9568 nil9568 nil9568 nil9568 nil9568    logProb: -9.4441432952881
+ a living room filled with furniture and a flat screen tv nil9568 a tv nil9568 nil0     logProb: -9.4673280715942
+ a living room filled with furniture and a fire place nil9568 a living room nil9568 nil0        logProb: -9.5949516296387
+ a living room filled with furniture and a fire place nil9568 a tv nil9568 nil0 nil0    logProb: -9.6201839447021
+ a living room filled with furniture and a fire place nil9568 a living room nil9568 nil9568     logProb: -9.6807909011841
+ a living room filled with furniture and a fireplace nil9568 nil9568 windows nil9568 nil9568 nil0 nil0  logProb: -9.766731262207
+ a living room filled with furniture and a fireplace nil9568 nil9568 windows nil9568 nil9568 nil9568 nil0       logProb: -9.8156709671021
+ a living room filled with furniture and a fireplace nil9568 nil9568 windows nil9568 nil9568 nil9568 nil9568    logProb: -9.8170299530029
+ a living room filled with furniture and a flat screen tv nil9568 a television nil9568 nil0     logProb: -9.8331832885742
+ a living room filled with furniture and a flat screen tv nil9568 a window nil9568 nil9568      logProb: -10.213683128357
+ a living room filled with furniture and a flat screen tv nil9568 a living room nil9568 logProb: -10.25599861145
+ a living room filled with furniture and a flat screen tv nil9568 a window nil9568 a    logProb: -10.272565841675
+ a living room filled with furniture and a flat screen tv nil9568 a television nil9568 nil9568  logProb: -10.357384681702
+ a living room filled with furniture and a flat screen tv nil9568 a tv nil9568 nil9568  logProb: -10.374998092651
+ a living room filled with furniture and a fire place nil9568 a tv nil9568 nil9568 nil0 logProb: -10.413304328918
+cp "myimg/IMG_0367.JPG" vis/imgs/img3.jpg
+image 3: a living room filled with furniture and a fireplace
+
+evaluating performance... 3/7 (0.000000)
+ a city street filled with lots of traffic nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logProb: -6.0804452896118
+ a city street filled with traffic at night nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logProb: -7.1912136077881
+ a city street filled with traffic and traffic lights nil9568 nil0 nil0 nil0 nil0 nil0 nil0     logProb: -7.667396068573
+ a city street filled with lots of traffic and traffic nil9568 nil0 nil0 nil0 nil0 nil0 logProb: -7.8203778266907
+ a city street filled with lots of traffic and traffic nil9568 nil9568 nil0 nil0 nil0 nil0      logProb: -7.8334922790527
+ a city street filled with traffic on a city street nil9568 nil0 nil0 nil0 nil0 nil0    logProb: -7.9178533554077
+ a street filled with lots of traffic and traffic nil9568 nil0 nil0 nil0 nil0 nil0 nil0 logProb: -8.0193176269531
+ a city street filled with lots of traffic nil9568 traffic lights nil9568 nil0 nil0 nil0 nil0   logProb: -8.0647249221802
+ a street filled with lots of traffic and traffic nil9568 nil9568 nil0 nil0 nil0 nil0 nil0      logProb: -8.0983285903931
+ a city street filled with traffic at night nil9568 nil9568 nil0 nil0 nil0 nil0 nil0 nil0       logProb: -8.1083374023438
+ a city street filled with lots of traffic nil9568 a traffic light nil9568 nil0 nil0 nil0       logProb: -8.2721853256226
+ a city street filled with lots of traffic and cars nil9568 nil0 nil0 nil0 nil0 nil0    logProb: -8.2854480743408
+ a city street filled with lots of traffic nil9568 traffic nil9568 nil0 nil0 nil0 nil0 nil0     logProb: -9.2547168731689
+ a city street filled with lots of traffic and traffic nil9568 nil9568 buildings nil9568 nil0 nil0      logProb: -9.8956489562988
+ a city street filled with lots of traffic and traffic nil9568 nil9568 traffic lights nil9568 nil0      logProb: -10.084930419922
+ a city street filled with lots of traffic and traffic nil9568 nil9568 traffic lights nil9568 nil9568   logProb: -10.140909194946
+ a city street filled with traffic on a city street nil9568 traffic lights nil9568 nil0 nil0    logProb: -10.333205223083
+ a street filled with lots of traffic and traffic nil9568 nil9568 traffic lights nil9568 nil0 nil0      logProb: -10.561780929565
+ a city street filled with lots of traffic nil9568 a traffic light nil9568 a street light       logProb: -10.780750274658
+ a city street filled with lots of traffic and traffic nil9568 nil9568 buildings nil9568 nil9568 nil0   logProb: -11.193305969238
+ a city street filled with lots of traffic and traffic nil9568 nil9568 buildings nil9568 nil9568 nil9568        logProb: -11.264969825745
+ a city street filled with lots of traffic nil9568 traffic lights nil9568 traffic lights nil9568 nil0   logProb: -11.389039993286
+ a city street filled with traffic on a city street nil9568 traffic lights and traffic nil9568  logProb: -11.494469642639
+ a city street filled with lots of traffic nil9568 a traffic light nil9568 a traffic light      logProb: -11.523127555847
+ a city street filled with lots of traffic nil9568 a traffic light nil9568 traffic lights nil9568       logProb: -11.557809829712
+ a city street filled with lots of traffic nil9568 traffic lights nil9568 traffic lights and street     logProb: -11.775939941406
+ a city street filled with lots of traffic nil9568 a traffic light nil9568 traffic lights and   logProb: -12.119672775269
+ a city street filled with lots of traffic nil9568 a traffic light nil9568 a red and    logProb: -12.389421463013
+ a city street filled with lots of traffic nil9568 traffic lights nil9568 traffic lights and signs      logProb: -12.420597076416
+cp "myimg/COCO_val2014_000000210273.jpg" vis/imgs/img4.jpg
+image 4: a city street filled with lots of traffic
+
+evaluating performance... 4/7 (0.000000)
+ a bunch of oranges sitting in a bowl nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0        logProb: -6.1961135864258
+ a bunch of oranges in a bowl on a table nil9568 nil0 nil0 nil0 nil0 nil0       logProb: -6.8380527496338
+ a close up of a bowl of oranges nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0     logProb: -7.0479187965393
+ a bunch of oranges sitting on a table nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0       logProb: -7.4117889404297
+ a close up of a bowl of oranges on a table nil9568 nil0 nil0 nil0 nil0 logProb: -7.4310245513916
+ a bowl filled with oranges on a table nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0       logProb: -7.5338888168335
+ a bunch of oranges in a bowl on a table nil9568 nil9568 nil0 nil0 nil0 nil0    logProb: -8.2707538604736
+ a bowl filled with oranges on top of a table nil9568 nil0 nil0 nil0 nil0 nil0  logProb: -8.351001739502
+ a bowl filled with oranges on top of a wooden table nil9568 nil0 nil0 nil0 nil0        logProb: -8.8344593048096
+ a close up of a bowl of oranges on a table nil9568 nil9568 nil0 nil0 nil0      logProb: -8.9274206161499
+ a close up of a bowl of oranges in a bowl nil9568 nil0 nil0 nil0 nil0  logProb: -8.9614868164062
+ a bunch of oranges sitting in a bowl nil9568 nil9568 nil0 nil0 nil0 nil0 nil0 nil0     logProb: -9.0400867462158
+ a bunch of oranges in a bowl on a table nil9568 nil9568 nil9568 nil0 nil0 nil0 logProb: -9.1835317611694
+ a bowl filled with oranges on top of a wooden table nil9568 nil9568 nil0 nil0 nil0     logProb: -9.4683475494385
+ a bowl filled with oranges on top of a wooden table nil9568 nil9568 nil9568 nil0 nil0  logProb: -9.8170576095581
+ a bowl filled with oranges on top of a wooden table nil9568 nil9568 nil9568 nil9568 nil0       logProb: -10.054273605347
+ a bowl filled with oranges on top of a wooden table nil9568 nil9568 nil9568 nil9568 nil9568    logProb: -10.082368850708
+ a bunch of oranges in a bowl on a table nil9568 nil9568 nil9568 nil9568 nil0 nil0      logProb: -10.113229751587
+ a bunch of oranges in a bowl on a table nil9568 nil9568 nil9568 nil9568 nil9568 nil0   logProb: -10.405700683594
+ a bunch of oranges in a bowl on a table nil9568 nil9568 nil9568 nil9568 nil9568 nil9568        logProb: -10.41467666626
+ a bunch of oranges sitting in a bowl nil9568 a bowl of oranges nil9568 nil0 nil0       logProb: -10.556074142456
+ a bunch of oranges sitting in a bowl nil9568 a bowl of oranges nil9568 nil9568 nil0    logProb: -10.595502853394
+ a bunch of oranges sitting in a bowl nil9568 a bowl of oranges nil9568 nil9568 nil9568 logProb: -10.596904754639
+ a close up of a bowl of oranges on a table nil9568 nil9568 nil9568 nil0 nil0   logProb: -10.794101715088
+ a close up of a bowl of oranges on a table nil9568 nil9568 nil9568 nil9568 nil0        logProb: -11.329883575439
+ a close up of a bowl of oranges on a table nil9568 nil9568 nil9568 nil9568 nil9568     logProb: -11.385841369629
+ a bunch of oranges in a bowl on a table nil9568 nil9568 nil9568 and nil9568 nil0       logProb: -11.658037185669
+ a bunch of oranges in a bowl on a table nil9568 nil9568 nil9568 and nil9568 nil9568    logProb: -11.671245574951
+ a bunch of oranges in a bowl on a table nil9568 in a room nil9568 nil0 logProb: -11.769136428833
+ a bunch of oranges in a bowl on a table nil9568 in a room nil9568 nil9568      logProb: -11.782459259033
+ a close up of a bowl of oranges on a table nil9568 nil9568 a nil9568 nil0      logProb: -11.955392837524
+ a close up of a bowl of oranges on a table nil9568 nil9568 a nil9568 nil9568   logProb: -12.016792297363
+ a close up of a bowl of oranges on a table nil9568 nil9568 and nil9568 nil0    logProb: -12.680179595947
+ a close up of a bowl of oranges on a table nil9568 nil9568 and nil9568 nil9568 logProb: -12.681553840637
+ a close up of a bowl of oranges on a table nil9568 nil9568 nil9568 and nil9568 logProb: -12.746435165405
+ a close up of a bowl of oranges on a table nil9568 a bowl of nil9568   logProb: -14.065706253052
+cp "myimg/COCO_val2014_000000031000.jpg" vis/imgs/img5.jpg
+image 5: a bunch of oranges sitting in a bowl
+
+evaluating performance... 5/7 (0.000000)
+ a bunch of vegetables on a cutting board nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0    logProb: -7.32817029953
+ a pile of broccoli sitting on top of a table nil9568 nil0 nil0 nil0 nil0 nil0  logProb: -8.0300922393799
+ a bunch of broccoli sitting on top of a table nil9568 nil0 nil0 nil0 nil0 nil0 logProb: -8.1362266540527
+ a bunch of broccoli sitting on top of a cutting board nil9568 nil0 nil0 nil0 nil0      logProb: -8.1436100006104
+ a pile of broccoli sitting on top of a wooden table nil9568 nil0 nil0 nil0 nil0        logProb: -8.3410024642944
+ a close up of a bunch of broccoli nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logProb: -8.4469022750854
+ a close up of a plate of food with broccoli nil9568 nil0 nil0 nil0 nil0 nil0   logProb: -8.5718460083008
+ a bunch of broccoli sitting on top of a wooden cutting board nil9568 nil0 nil0 nil0    logProb: -8.8284378051758
+ a close up of a bunch of broccoli on a table nil9568 nil0 nil0 nil0 nil0       logProb: -8.9110374450684
+ a close up of a bunch of broccoli on a cutting board nil9568 nil0 nil0 nil0    logProb: -8.9689407348633
+ a pile of broccoli sitting on top of a wooden cutting board nil9568 nil0 nil0 nil0     logProb: -9.0157890319824
+ a close up of a plate of food with broccoli nil9568 nil9568 nil0 nil0 nil0 nil0        logProb: -9.6965217590332
+ a pile of broccoli sitting on top of a wooden table nil9568 nil9568 nil0 nil0 nil0     logProb: -10.138650894165
+ a close up of a bunch of broccoli on a table nil9568 nil9568 nil0 nil0 nil0    logProb: -10.163230895996
+ a bunch of broccoli sitting on top of a cutting board nil9568 a knife nil9568 nil0     logProb: -10.203526496887
+ a bunch of broccoli sitting on top of a wooden cutting board nil9568 a knife nil9568   logProb: -10.211192131042
+ a bunch of broccoli sitting on top of a wooden cutting board nil9568 a knife and       logProb: -10.426202774048
+ a pile of broccoli sitting on top of a wooden cutting board nil9568 a knife nil9568    logProb: -10.523817062378
+ a bunch of broccoli sitting on top of a cutting board nil9568 a knife nil9568 nil9568  logProb: -10.64574432373
+ a bunch of broccoli sitting on top of a cutting board nil9568 a knife and nil9568      logProb: -10.667490005493
+ a close up of a bunch of broccoli on a cutting board nil9568 a knife nil9568   logProb: -10.752145767212
+ a pile of broccoli sitting on top of a wooden cutting board nil9568 a knife and        logProb: -10.791557312012
+ a close up of a bunch of broccoli on a cutting board nil9568 a knife and       logProb: -10.807378768921
+ a bunch of broccoli sitting on top of a table nil9568 a knife and fork nil9568 logProb: -11.59802532196
+ a bunch of broccoli sitting on top of a cutting board nil9568 a knife and a    logProb: -11.989518165588
+cp "myimg/COCO_val2014_000000556726.jpg" vis/imgs/img6.jpg
+image 6: a bunch of vegetables on a cutting board
+evaluating performance... 6/7 (0.000000)
+ a group of people flying kites in a field nil9568 nil0 nil0 nil0 nil0 nil0 nil0        logProb: -6.7754988670349
+ a group of people in a field flying kites nil9568 nil0 nil0 nil0 nil0 nil0 nil0        logProb: -7.0866885185242
+ a group of people flying kites in a park nil9568 nil0 nil0 nil0 nil0 nil0 nil0 logProb: -7.258403301239
+ a bunch of kites flying in the sky nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logProb: -7.4914093017578
+ a bunch of kites flying in the air nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logProb: -7.5168685913086
+ a group of people flying kites in the sky nil9568 nil0 nil0 nil0 nil0 nil0 nil0        logProb: -7.6222066879272
+ a large group of people flying kites in a field nil9568 nil0 nil0 nil0 nil0 nil0       logProb: -7.7618780136108
+ a group of people are flying kites in a field nil9568 nil0 nil0 nil0 nil0 nil0 logProb: -7.9551482200623
+ a group of people in a field flying kites nil9568 nil9568 nil0 nil0 nil0 nil0 nil0     logProb: -8.3765630722046
+ a large group of people flying kites in the sky nil9568 nil0 nil0 nil0 nil0 nil0       logProb: -8.3911905288696
+ a group of people are flying kites in a park nil9568 nil0 nil0 nil0 nil0 nil0  logProb: -8.6566953659058
+ a group of people flying kites in a field nil9568 a crowd of people nil9568 nil0       logProb: -10.440557479858
+ a group of people flying kites in a field nil9568 a crowd of people nil9568 nil9568    logProb: -10.453832626343
+ a group of people flying kites in the sky nil9568 a city nil9568 nil0 nil0 nil0        logProb: -11.374956130981
+ a large group of people flying kites in a field nil9568 a crowd of people nil9568      logProb: -11.958853721619
+ a large group of people flying kites in the sky nil9568 a city nil9568 nil0 nil0       logProb: -12.035184860229
+ a large group of people flying kites in the sky nil9568 a park nil9568 nil0 nil0       logProb: -12.683983802795
+ a group of people in a field flying kites nil9568 nil9568 buildings and a nil9568 nil0 logProb: -13.010216712952
+ a group of people in a field flying kites nil9568 nil9568 buildings and a nil9568 nil9568      logProb: -13.019824028015
+ a large group of people flying kites in a field nil9568 a crowd nil9568 nil0 nil0      logProb: -13.088655471802
+ a large group of people flying kites in a field nil9568 a crowd nil9568 nil9568 nil0   logProb: -13.101521492004
+ a large group of people flying kites in a field nil9568 a crowd nil9568 nil9568 nil9568        logProb: -13.106260299683
+ a large group of people flying kites in the sky nil9568 a city street nil9568 nil0     logProb: -13.132629394531
+ a group of people are flying kites in a field nil9568 a large building nil9568 nil0    logProb: -13.252408981323
+ a group of people are flying kites in a field nil9568 a large building nil9568 nil9568 logProb: -13.297803878784
+ a large group of people flying kites in the sky nil9568 a city street nil9568 nil9568  logProb: -13.392893791199
+ a large group of people flying kites in the sky nil9568 a city nil9568 nil9568 nil0    logProb: -13.916828155518
+ a large group of people flying kites in the sky nil9568 a city nil9568 nil9568 nil9568 logProb: -14.139220237732
+ a large group of people flying kites in the sky nil9568 a city nil9568 a nil9568       logProb: -14.415846824646
+ a large group of people flying kites in the sky nil9568 a park nil9568 a large logProb: -15.707370758057
+ a large group of people flying kites in the sky nil9568 a field with a large   logProb: -15.851755142212
+
+ 
+ 
+beam-search-size == 1:
+cp "myimg/COCO_val2014_000000322369.jpg" vis/imgs/img1.jpg
+image 1: a sandwich and a drink on a table
+evaluating performance... 1/6 (0.000000)
+cp "myimg/COCO_val2014_000000152740.jpg" vis/imgs/img2.jpg
+image 2: a herd of cows grazing in a field
+evaluating performance... 2/6 (0.000000)
+cp "myimg/IMG_0367.JPG" vis/imgs/img3.jpg
+image 3: a living room with a couch and a table
+evaluating performance... 3/6 (0.000000)
+cp "myimg/COCO_val2014_000000210273.jpg" vis/imgs/img4.jpg
+image 4: a city street filled with traffic and traffic lights
+evaluating performance... 4/6 (0.000000)
+cp "myimg/COCO_val2014_000000031000.jpg" vis/imgs/img5.jpg
+image 5: a bowl of oranges and a banana on a table
+evaluating performance... 5/6 (0.000000)
+cp "myimg/COCO_val2014_000000556726.jpg" vis/imgs/img6.jpg
+image 6: a bunch of broccoli and a knife on a cutting board
+evaluating performance... 0/6 (0.000000)
+
+
+结论：
+
+1. COCO的object catagory只有80。很多词在这80个里面都没有。比如fire place, traffic lights , street。 所以基本上没有多少个词能够跟COCO的object catagory匹配。我比较担心这一点。 也许不会有多少性能的提高。
+
+2. 近似词需要对应。people, man, women 需要对应到COCO里的person。 cattle需要对应到COCO里的cow 。
+
+3. 而我们肯定要拿 beam search == 1 和 beam search size == 10 作为 baseline。 其中beam search size == 10 这个baseline可能比较难beat，因为从这几张图片看来，即使只是beam search size 从1变成到10后，模型就更准确了。
+
+
+

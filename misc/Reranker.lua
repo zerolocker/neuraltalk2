@@ -83,7 +83,7 @@ function Reranker:rank(beams, images)
       local sent_str = ''
       for j = 1, sent:size(1) do
         local word_idx = self:NN_in_ImgNet(self.vocab[tostring(sent[j])]) -- index in the 1000 ImageNet class nouns
-        local near_word_in_ImgNet = (word_idx > 0) and (table.concat(self.synset_words[word_idx])) or ('')
+        local near_word_in_ImgNet = (word_idx > 0) and (string.format('%s%.2f', table.concat(self.synset_words[word_idx]), pred[word_idx])) or ('')
         logP2 = logP2 + torch.log(pred[word_idx])
         
         n = n + 1
@@ -130,6 +130,15 @@ end
 
 function Reranker:NN_in_ImgNet(word_str) -- nearest neighbour in ImageNet 1000 class nouns, returns -1 if the minimum distance is greater than a threshold (too far away)
   -- similarity mesure: -dotProduct 
+  
+  if _cache_NN_query == nil then
+    _cache_NN_query={} 
+  else
+    if _cache_NN_query[word_str] then 
+      return _cache_NN_query[word_str]
+    end
+  end
+  
   local THRESHOLD = 0.5
   local vec = self:get_words_vec({word_str}) -- (can use cache to speed it up) (possibly be the vector of <UNK>)
   if torch.norm(vec-w2v.UNK) < 1e-5 then
@@ -138,8 +147,10 @@ function Reranker:NN_in_ImgNet(word_str) -- nearest neighbour in ImageNet 1000 c
   local dotprod = torch.mv(self.synset_vecs ,vec)
   dotprod , idx = torch.sort(dotprod,1,true)
   if dotprod[1] < THRESHOLD then
+    _cache_NN_query[word_str] = -1
     return -1
   else
+    _cache_NN_query[word_str] = idx[1]
     return idx[1]
   end
 end

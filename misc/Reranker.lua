@@ -9,6 +9,7 @@ local Reranker, parent = torch.class('nn.Reranker', 'nn.Module')
 function Reranker:__init(params, proto_file, model_file, word2vec_karpathy, vocab, vocab_size)
   parent.__init(self)
 
+  self.params = params
   -- load VGG
   if params.gpuid >= 0 then
     if params.backend ~= 'clnn' then
@@ -71,11 +72,64 @@ end
 
 function Reranker:rank(beams, images)
   local batchSize = #beams
-  local seq = torch.LongTensor(beams[1][1].seq:size(1), batchSize)
-
+  local seq_length = beams[1][1].seq:size(1)
+  local seq = torch.LongTensor(seq_length, batchSize)
+  local seqLogprobs = torch.FloatTensor(seq_length, batchSize)
 
   for k = 1, batchSize do
     local pred = self.cnn:forward(images[k])
+    if self.params.rerank == 'P1+P2' then
+      self:weightedsum_strategy(k, pred, beams, seq, seqLogprobs, seq_length)
+    elseif self.params.rerank == 'rank1+rank2' then
+      self:addrank_strategy(k, pred, beams, seq, seqLogprobs, seq_length)
+    else
+      assert(false, 'invalid argument: -rerank')
+    end
+    
+  end
+
+  return seq, seqLogprobs
+end
+
+function Reranker:addrank_strategy(k, pred, beams, seq, seqLogprobs, seq_length)
+    local logP2s = torch.Tensor(#beams[k]):fill(0)
+    for i = 1, #beams[k] do -- beams[k][i] is current sentence
+      local logP2 = 0
+      local sent = beams[k][i].seq     
+      local sent_str = ''
+      for j = 1, sent:size(1) do -- beams[k][i].seq[j] is current word
+        local word_idx = self:NN_in_ImgNet(self.vocab[tostring(sent[j])]) -- index in the 1000 ImageNet class nouns
+        local near_word_in_ImgNet = (word_idx > 0) and (string.format('%s%.2f', table.concat(self.synset_words[word_idx]), pred[word_idx])) or ('')
+        logP2 = logP2 + torch.log(pred[word_idx])
+        sent_str = sent_str .. ' ' .. (self.vocab[tostring(sent[j])]==nil and 'nil'..sent[j] or  (self.vocab[tostring(sent[j])] .. '('..near_word_in_ImgNet..')' ) )
+      end
+      beams[k][i].sent_str = sent_str
+      beams[k][i].p2 = logP2
+      logP2s[i] = logP2
+    end
+    local sortedP2,idx = torch.sort(logP2s,1,true) -- "true" =  descending order
+    for j=1, #beams[k]  do beams[k][j].rank1 = j end
+    local rank2 = 1
+    for j=1, #beams[k]  do  -- assign rank2 to each sentence
+      if j>1 and sortedP2[j] ~= sortedP2[j-1] then rank2 = j end
+      beams[k][idx[j]].rank2 = rank2
+    end
+    for j=1, #beams[k]  do beams[k][j].rank = beams[k][j].rank1 + beams[k][j].rank2 end
+    
+    if self.params.reranker_debug_info == 1 then
+      for i=1, #beams[k] do print(beams[k][i].sent_str, string.format('logP1:%.0f logP2:%.0f rank(1,2,1+2)=%d,%d,%d', beams[k][i].p, beams[k][i].p2, beams[k][i].rank1, beams[k][i].rank2, beams[k][i].rank )) end
+    end
+    local function compare(a,b) return a.rank < b.rank end -- used downstream
+    table.sort(beams[k], compare)
+    seq[{ {}, k }] = beams[k][1].seq
+    seqLogprobs[{ {}, k }] = beams[k][1].logps
+    
+    if self.params.reranker_debug_info == 1 then
+      print('best new rank is', beams[k][1].rank)
+    end
+end
+
+function Reranker:weightedsum_strategy(k, pred, beams, seq, seqLogprobs, seq_length)
     for i = 1, #beams[k] do
       local logP2 = 0
       local sent = beams[k][i].seq     
@@ -90,15 +144,19 @@ function Reranker:rank(beams, images)
         sent_str = sent_str .. ' ' .. (self.vocab[tostring(sent[j])]==nil and 'nil'..sent[j] or  (self.vocab[tostring(sent[j])] .. '('..near_word_in_ImgNet..')' ) )
         
       end
-      print(sent_str,'logProb: ' .. beams[k][i].p)
       alpha = 0.5
-      local P = torch.exp(beams[k][i].p) * alpha + torch.pow(torch.exp(logP2),n) * (1-alpha)
+      -- I found beams[k][i].p is simply the sum of all $seq_length log probabilities of every word, and is used as the key of sorting in function sample_beam(LanguageModel.lua).
+      local P = torch.exp(beams[k][i].p/seq_length) * alpha + torch.exp(logP2/n) * (1-alpha)
+      if self.params.reranker_debug_info == 1 then print(sent_str, string.format('logP1:%.2f logP2:%.2f P:%.2f', beams[k][i].p, logP2, P)) end
+      beams[k][i].p_rerank = P
     end
 
+    local function compare(a,b) return a.p_rerank > b.p_rerank end -- used downstream
+    table.sort(beams[k], compare)
     seq[{ {}, k }] = beams[k][1].seq
-  end
+    seqLogprobs[{ {}, k }] = beams[k][1].logps
 
-  return seq
+    if self.params.reranker_debug_info == 1 then print('maximum P is', beams[k][1].p_rerank) end
 end
 
   -- return the average the vector of a list of words
@@ -128,6 +186,7 @@ function Reranker:get_words_vec(words)
   end
 end
 
+-- based on tiny experiment results, can try return k-NN (k=5), and we will have 5 probabilities, and take their max. This might improve performance.
 function Reranker:NN_in_ImgNet(word_str) -- nearest neighbour in ImageNet 1000 class nouns, returns -1 if the minimum distance is greater than a threshold (too far away)
   -- similarity mesure: -dotProduct 
   
@@ -140,7 +199,7 @@ function Reranker:NN_in_ImgNet(word_str) -- nearest neighbour in ImageNet 1000 c
   end
   
   local THRESHOLD = 0.5
-  local vec = self:get_words_vec({word_str}) -- (can use cache to speed it up) (possibly be the vector of <UNK>)
+  local vec = self:get_words_vec({word_str})
   if torch.norm(vec-w2v.UNK) < 1e-5 then
     return -1
   end

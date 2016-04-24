@@ -8,7 +8,7 @@ COCO_val2014_000000322369.jpg
 COCO_val2014_000000556726.jpg
 IMG_0367.JPG
 
-发现的问题是：如果所有词都没有near nei，那么logP2 = 0，如果有NN， 那么logP2<0。 也就是说，有near nei的句子的P2反而更低，这就跟初衷相反了，当初我们希望有ImgNet的near nei、并且这个near pei的概率高的句子的P2更高。
+发现的问题是：如果所有词都没有near nei，那么logP2 = 0，如果有NN， 那么logP2<0。 也就是说，有越多near nei的句子的P2反而更低，这就跟初衷相反了，当初我们希望有ImgNet的near nei、并且这个near pei的概率高的句子的P2更高。
 结果CIDEr和BLEU-1比baseline低。
 
 两种改进的做法：

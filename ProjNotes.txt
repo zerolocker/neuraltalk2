@@ -9,7 +9,7 @@
   (b) It usually assigns (almost) zero probability to objects even existent in the image. For example,
      + a close up of a bowl(soup_bowl, prob=0.01) of oranges(orange, prob=0.09) on a table(pool_table_billiard_table_snooker_table, prob=0.00)
      Maybe it's because the noun's nearest neighbour in ImageNet vocabulary(e.g. bowl --> soup_bowl) look very different in the ImageNet's training set, and the object in this image is not 'dominant' and images in MSCOCO contains multiple objects as compared to the images in ImageNet where only one object is presented. All these factors make the ImageNet model not generalize well to MSCOCO's images.
-  
+(3) (reranking 公式有问题) 见下面的 4/23 的报告
 
 4/24
 ----------------------------------------

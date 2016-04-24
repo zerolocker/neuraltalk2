@@ -1,4 +1,17 @@
 4/24
+------------------------
+写报告的时候写上我们的reranking不work的原因是：
+(1) We found that the generate sentences contains a large variety of objects, but the coverage of objects of an object detector is very small(e.g. 80 object catagories in MSCOCO dataset, 20 in PASCAL VOC 2012 dataset ). Thus we cannot detect most of the nouns in the generate sentence.
+(2) We try to use an object classifier instead of an object detector.  The object classifier is trained on ImageNet's 1000 classes. It takes as input a whole image, and outputs a probability for each of the 1000 objects it can classify. We made this choice because the coverage of objects it can classify is much larger than that of an object detector (e.g. RCNN\cite{RCNN}). Unfortunately, this approach also has two problem: 
+  (a) The generated sentence still have a lot of nouns that is out-of-vocabulary of the 1000 object vocabulary. For example, none of the nouns in the sentences below are in the 1000 object vocabulary, and thus not detectable by the classifier:
+     + a living room filled with furniture and a fireplace
+     + a city street filled with lots of traffic
+  (b) It usually assigns (almost) zero probability to objects even existent in the image. For example,
+     + a close up of a bowl(soup_bowl, prob=0.01) of oranges(orange, prob=0.09) on a table(pool_table_billiard_table_snooker_table, prob=0.00)
+     Maybe it's because the noun's nearest neighbour in ImageNet vocabulary(e.g. bowl --> soup_bowl) look very different in the ImageNet's training set, and the object in this image is not 'dominant' and images in MSCOCO contains multiple objects as compared to the images in ImageNet where only one object is presented. All these factors make the ImageNet model not generalize well to MSCOCO's images.
+  
+
+4/24
 ----------------------------------------
 根据实验结果，决定尝试将找nearest neighbour的函数 NN_in_ImgNet() 从原来的返回1个单词改成返回5个单词。用这5个单词的概率的最大值来作为query word的概率。
 

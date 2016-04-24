@@ -1,4 +1,4 @@
-4/23
+4/24
 -------------------------------------
 从这几张图生成的Caption得到的结论：
 COCO_val2014_000000031000.jpg
@@ -8,89 +8,92 @@ COCO_val2014_000000322369.jpg
 COCO_val2014_000000556726.jpg
 IMG_0367.JPG
 
-发现的问题是：logP1比 logP2 高太多了，导致logP2对P的几乎毫无影响。所以P = alpha*P1 + alpha*P2里P2对P毫无影响. （请看下面输出）
-建议的做法：用logP1排序得到一个rank, 用logP2排序得到一个rank，两个rank相加作为最后的rank。
+发现的问题是：如果所有词都没有near nei，那么logP2 = 0，如果有NN， 那么logP2<0。 也就是说，有near nei的句子的P2反而更低，这就跟初衷相反了，当初我们希望有ImgNet的near nei、并且这个near pei的概率高的句子的P2更高。
+结果CIDEr和BLEU-1比baseline低。
 
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logP1: -6.18 logP2 -42.77 P: 0.37
- a() sandwich(cheeseburger0.00) on() a() plate(plate0.00) with() a() drink(beer_bottle0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logP1: -7.77 logP2 -35.94 P: 0.36
- a() sandwich(cheeseburger0.00) on() a() plate(plate0.00) with() a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil0 nil0 nil0 nil0 nil0  logP1: -8.32 logP2 -40.16 P: 0.34
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil0 nil0   logP1: -10.18 logP2 -56.79 P: 0.28
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil9568 nil0        logP1: -10.65 logP2 -56.79 P: 0.27
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil9568 nil9568     logP1: -10.69 logP2 -56.79 P: 0.27
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) and() a() nil9568   logP1: -10.81 logP2 -56.79 P: 0.27
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() drink(beer_bottle0.00) and() a() nil9568 nil0 nil0  logP1: -11.60 logP2 -52.57 P: 0.26
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() drink(beer_bottle0.00) and() a() nil9568 nil9568 nil0logP1: -11.62 logP2 -52.57 P: 0.26
- a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() drink(beer_bottle0.00) and() a() nil9568 nil9568 nil9568     logP1: -11.62 logP2 -52.57 P: 0.26
-maximum P is    0.37433558702469
-image 1: a sandwich and a drink on a table
+两种改进的做法：
+（1）用logP1排序得到一个rank, 用logP2排序得到一个rank，两个rank相加作为最后的rank。 （CIDEr和BLEU-1更高了。但是还是比baseline低）
+（2）用logP1排序得到一个rank，计算每个句子里拥有高概率物体的个数，按照这个数排序得到一个rank，两个rank相加作为最后的rank。 （CIDEr和BLEU-1跟baseline一模一样，证明可能没有发生任何reranking）
+
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logP1/16:-0.39 logP2/n:-2.11 P:0.40
+ a() sandwich(cheeseburger0.00) on() a() plate(plate0.00) with() a() drink(beer_bottle0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0  logP1/16:-0.49 logP2/n:-1.68 P:0.40
+ a() sandwich(cheeseburger0.00) on() a() plate(plate0.00) with() a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil0 nil0 nil0 nil0 nil0  logP1/16:-0.52 logP2/n:-1.99 P:0.37
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil0 nil0   logP1/16:-0.64 logP2/n:-3.07 P:0.29
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil9568 nil0        logP1/16:-0.67 logP2/n:-3.07 P:0.28
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) nil9568 nil9568 nil9568     logP1/16:-0.67 logP2/n:-3.07 P:0.28
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() cup(measuring_cup0.00) of() coffee(espresso0.00) and() a() nil9568   logP1/16:-0.68 logP2/n:-3.07 P:0.28
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() drink(beer_bottle0.00) and() a() nil9568 nil0 nil0  logP1/16:-0.73 logP2/n:-2.77 P:0.27
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() drink(beer_bottle0.00) and() a() nil9568 nil9568 nil0logP1/16:-0.73 logP2/n:-2.77 P:0.27
+ a() sandwich(cheeseburger0.00) and() a() drink(beer_bottle0.00) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 a() drink(beer_bottle0.00) and() a() nil9568 nil9568 nil9568     logP1/16:-0.73 logP2/n:-2.77 P:0.27
+maximum P is    0.40049560368061
+image 1: a sandwich on a plate with a drink
 evaluating performance... 1/-1 (0.000000)
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 nil0 nil0 nil0 nil0 nil0   logP1: -4.91 logP2 -177.74 P: 0.37
- a() herd() of() cows(water_buffalowater_oxAsiatic_buffaloBubalus_bubalis0.00) grazing() in() a() field() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0    logP1: -5.37 logP2 -185.11 P: 0.36
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() hillside() nil9568 nil0 nil0 nil0 nil0 nil0        logP1: -5.98 logP2 -177.74 P: 0.34
- a() herd() of() cattle(bison0.65) grazing() in() a() field() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0        logP1: -6.45 logP2 -177.74 P: 0.33
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() hillside() nil9568 nil9568 nil0 nil0 nil0 nil0     logP1: -7.03 logP2 -177.74 P: 0.32
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() forest() nil9568 nil0 nil0     logP1: -7.09 logP2 -177.74 P: 0.32
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() forest() nil9568 nil9568 nil0  logP1: -7.26 logP2 -177.74 P: 0.32
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() forest() nil9568 nil9568 nil9568       logP1: -7.26 logP2 -177.74 P: 0.32
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() forest() nil9568 nil0  logP1: -9.24 logP2 -177.74 P: 0.28
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() forest() nil9568 nil9568       logP1: -9.24 logP2 -177.74 P: 0.28
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() field() nil9568 nil0   logP1: -9.82 logP2 -177.74 P: 0.27
- a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() field() nil9568 nil9568        logP1: -9.83 logP2 -177.74 P: 0.27
-maximum P is    0.3678246832369
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 nil0 nil0 nil0 nil0 nil0   logP1/16:-0.31 logP2/n:-0.03 P:0.85
+ a() herd() of() cows(water_buffalowater_oxAsiatic_buffaloBubalus_bubalis0.00) grazing() in() a() field() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0    logP1/16:-0.34 logP2/n:-0.49 P:0.66
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() hillside() nil9568 nil0 nil0 nil0 nil0 nil0        logP1/16:-0.37 logP2/n:-0.03 P:0.83
+ a() herd() of() cattle(bison0.65) grazing() in() a() field() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0        logP1/16:-0.40 logP2/n:-0.03 P:0.82
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() hillside() nil9568 nil9568 nil0 nil0 nil0 nil0     logP1/16:-0.44 logP2/n:-0.03 P:0.81
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() forest() nil9568 nil0 nil0     logP1/16:-0.44 logP2/n:-0.03 P:0.81
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() forest() nil9568 nil9568 nil0  logP1/16:-0.45 logP2/n:-0.03 P:0.80
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() forest() nil9568 nil9568 nil9568       logP1/16:-0.45 logP2/n:-0.03 P:0.80
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() forest() nil9568 nil0  logP1/16:-0.58 logP2/n:-0.03 P:0.77
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() forest() nil9568 nil9568       logP1/16:-0.58 logP2/n:-0.03 P:0.77
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() field() nil9568 nil0   logP1/16:-0.61 logP2/n:-0.03 P:0.76
+ a() herd() of() cattle(bison0.65) grazing() on() a() lush() green() field() nil9568 a() green() field() nil9568 nil9568        logP1/16:-0.61 logP2/n:-0.03 P:0.76
+maximum P is    0.85452181100845
 image 2: a herd of cattle grazing on a lush green field
 evaluating performance... 2/-1 (0.000000)
- a() living() room() filled() with() furniture() and() a() fireplace(stove0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0   logP1: -6.09 logP2 -178.59 P: 0.34
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 nil0 nil0 nil0 nil0 nil0      logP1: -6.09 logP2 -178.70 P: 0.34
- a() living() room() filled() with() furniture() and() a() fireplace(stove0.00) nil9568 nil9568 nil0 nil0 nil0 nil0 nil0        logP1: -7.38 logP2 -178.59 P: 0.32
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() fireplace(stove0.00) nil9568 nil0 nil0    logP1: -8.27 logP2 -178.59 P: 0.30
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() fireplace(stove0.00) nil9568 nil9568 nil0 logP1: -8.39 logP2 -178.59 P: 0.30
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() fireplace(stove0.00) nil9568 nil9568 nil9568      logP1: -8.41 logP2 -178.59 P: 0.30
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() tv() nil9568 nil0 nil0    logP1: -9.62 logP2 -178.70 P: 0.27
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() television(televisiontelevision_system0.02) nil9568 nil0 nil0     logP1: -9.94 logP2 -171.36 P: 0.27
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() tv() nil9568 nil9568 nil0 logP1: -10.41 logP2 -178.70 P: 0.26
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() tv() nil9568 nil9568 nil9568      logP1: -10.57 logP2 -178.70 P: 0.26
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() television(televisiontelevision_system0.02) nil9568 nil9568 nil0  logP1: -10.73 logP2 -171.36 P: 0.26
- a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() television(televisiontelevision_system0.02) nil9568 nil9568 nil9568       logP1: -10.78 logP2 -171.36 P: 0.25
-maximum P is    0.34170965511976
-image 3: a living room filled with furniture and a fireplace
+ a() living() room() filled() with() furniture() and() a() fireplace(stove0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0   logP1/16:-0.38 logP2/n:-0.69 P:0.59
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 nil0 nil0 nil0 nil0 nil0      logP1/16:-0.38 logP2/n:0.00 P:0.84
+ a() living() room() filled() with() furniture() and() a() fireplace(stove0.00) nil9568 nil9568 nil0 nil0 nil0 nil0 nil0        logP1/16:-0.46 logP2/n:-0.69 P:0.57
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() fireplace(stove0.00) nil9568 nil0 nil0    logP1/16:-0.52 logP2/n:-0.69 P:0.55
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() fireplace(stove0.00) nil9568 nil9568 nil0 logP1/16:-0.52 logP2/n:-0.69 P:0.55
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() fireplace(stove0.00) nil9568 nil9568 nil9568      logP1/16:-0.53 logP2/n:-0.69 P:0.55
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() tv() nil9568 nil0 nil0    logP1/16:-0.60 logP2/n:0.00 P:0.77
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() television(televisiontelevision_system0.02) nil9568 nil0 nil0     logP1/16:-0.62 logP2/n:-0.24 P:0.66
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() tv() nil9568 nil9568 nil0 logP1/16:-0.65 logP2/n:0.00 P:0.76
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() tv() nil9568 nil9568 nil9568      logP1/16:-0.66 logP2/n:0.00 P:0.76
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() television(televisiontelevision_system0.02) nil9568 nil9568 nil0  logP1/16:-0.67 logP2/n:-0.24 P:0.65
+ a() living() room() filled() with() furniture() and() a() fire() place() nil9568 a() television(televisiontelevision_system0.02) nil9568 nil9568 nil9568       logP1/16:-0.67 logP2/n:-0.24 P:0.65
+maximum P is    0.84164407849312
+image 3: a living room filled with furniture and a fire place
 evaluating performance... 3/-1 (0.000000)
- a() city() street() filled() with() lots() of() traffic() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logP1: -6.08 logP2 -91.22 P: 0.34
- a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil0 nil0 nil0 nil0 nil0     logP1: -7.82 logP2 -91.22 P: 0.31
- a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil9568 nil0 nil0 nil0 nil0  logP1: -7.83 logP2 -91.22 P: 0.31
- a() city() street() filled() with() lots() of() traffic() nil9568 traffic() lights() nil9568 nil0 nil0 nil0 nil0       logP1: -8.06 logP2 -91.22 P: 0.30
- a() city() street() filled() with() lots() of() traffic() nil9568 a() traffic() light(traffic_lighttraffic_signalstoplight0.00) nil9568 nil0 nil0 nil0 logP1: -8.27 logP2 -94.89 P: 0.30
- a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil9568 traffic() lights() nil9568 nil0      logP1: -10.08 logP2 -91.22 P: 0.27
- a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil9568 traffic() lights() nil9568 nil9568   logP1: -10.14 logP2 -91.22 P: 0.27
- a() city() street() filled() with() lots() of() traffic() nil9568 a() traffic() light(traffic_lighttraffic_signalstoplight0.00) nil9568 a() street() light(traffic_lighttraffic_signalstoplight0.00)       logP1: -10.78 logP2 -98.56 P: 0.26
- a() city() street() filled() with() lots() of() traffic() nil9568 traffic() lights() nil9568 traffic() lights() and() street() logP1: -11.78 logP2 -91.22 P: 0.24
-maximum P is    0.34359239193145
+ a() city() street() filled() with() lots() of() traffic() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0   logP1/16:-0.38 logP2/n:0.00 P:0.84
+ a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil0 nil0 nil0 nil0 nil0     logP1/16:-0.49 logP2/n:0.00 P:0.81
+ a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil9568 nil0 nil0 nil0 nil0  logP1/16:-0.49 logP2/n:0.00 P:0.81
+ a() city() street() filled() with() lots() of() traffic() nil9568 traffic() lights() nil9568 nil0 nil0 nil0 nil0       logP1/16:-0.50 logP2/n:0.00 P:0.80
+ a() city() street() filled() with() lots() of() traffic() nil9568 a() traffic() light(traffic_lighttraffic_signalstoplight0.00) nil9568 nil0 nil0 nil0 logP1/16:-0.52 logP2/n:-0.59 P:0.58
+ a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil9568 traffic() lights() nil9568 nil0      logP1/16:-0.63 logP2/n:0.00 P:0.77
+ a() city() street() filled() with() lots() of() traffic() and() traffic() nil9568 nil9568 traffic() lights() nil9568 nil9568   logP1/16:-0.63 logP2/n:0.00 P:0.77
+ a() city() street() filled() with() lots() of() traffic() nil9568 a() traffic() light(traffic_lighttraffic_signalstoplight0.00) nil9568 a() street() light(traffic_lighttraffic_signalstoplight0.00)       logP1/16:-0.67 logP2/n:-1.17 P:0.41
+ a() city() street() filled() with() lots() of() traffic() nil9568 traffic() lights() nil9568 traffic() lights() and() street() logP1/16:-0.74 logP2/n:0.00 P:0.74
+maximum P is    0.84192118048668
 image 4: a city street filled with lots of traffic
 evaluating performance... 4/-1 (0.000000)
- a() bunch() of() oranges() sitting() in() a() bowl(mixing_bowl0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0 logP1: -6.20 logP2 -96.26 P: 0.34
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0      logP1: -7.05 logP2 -96.26 P: 0.32
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil0 nil0 nil0 nil0   logP1: -7.43 logP2 -97.64 P: 0.32
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil0 nil0 nil0        logP1: -8.93 logP2 -97.64 P: 0.29
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 nil0 nil0     logP1: -10.79 logP2 -97.64 P: 0.26
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 nil9568 nil0  logP1: -11.33 logP2 -97.64 P: 0.25
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 nil9568 nil9568       logP1: -11.39 logP2 -97.64 P: 0.25
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 a() nil9568 nil0      logP1: -11.96 logP2 -97.64 P: 0.24
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 a() nil9568 nil9568   logP1: -12.02 logP2 -97.64 P: 0.24
- a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 and() nil9568 logP1: -12.75 logP2 -97.64 P: 0.23
-maximum P is    0.34067780524492
+ a() bunch() of() oranges() sitting() in() a() bowl(mixing_bowl0.00) nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0 logP1/16:-0.39 logP2/n:-0.36 P:0.69
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() nil9568 nil0 nil0 nil0 nil0 nil0 nil0 nil0      logP1/16:-0.44 logP2/n:-0.36 P:0.67
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil0 nil0 nil0 nil0   logP1/16:-0.46 logP2/n:-0.82 P:0.53
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil0 nil0 nil0        logP1/16:-0.56 logP2/n:-0.82 P:0.51
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 nil0 nil0     logP1/16:-0.67 logP2/n:-0.82 P:0.48
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 nil9568 nil0  logP1/16:-0.71 logP2/n:-0.82 P:0.47
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 nil9568 nil9568       logP1/16:-0.71 logP2/n:-0.82 P:0.47
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 a() nil9568 nil0      logP1/16:-0.75 logP2/n:-0.82 P:0.46
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 a() nil9568 nil9568   logP1/16:-0.75 logP2/n:-0.82 P:0.46
+ a() close() up() of() a() bowl(mixing_bowl0.00) of() oranges() on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil9568 and() nil9568 logP1/16:-0.80 logP2/n:-0.82 P:0.45
+maximum P is    0.68999657034874
 image 5: a bunch of oranges sitting in a bowl
 evaluating performance... 5/-1 (0.000000)
- a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil0 nil0 nil0 nil0    logP1: -8.91 logP2 -164.94 P: 0.29
- a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() cutting() board(dining_tableboard0.00) nil9568 nil0 nil0 nil0   logP1: -8.97 logP2 -165.33 P: 0.29
- a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil0 nil0 nil0 logP1: -10.16 logP2 -164.94 P: 0.26
- a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() cutting() board(dining_tableboard0.00) nil9568 a() knife(screwdriver0.00) nil9568       logP1: -10.75 logP2 -165.95 P: 0.26
- a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() cutting() board(dining_tableboard0.00) nil9568 a() knife(screwdriver0.00) and() logP1: -10.81 logP2 -165.95 P: 0.25
- a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() counter() nil9568 nil0 nil0 nil0 nil0   logP1: -10.83 logP2 -165.91 P: 0.25
- a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 a() knife(screwdriver0.00) nil9568     logP1: -12.41 logP2 -165.55 P: 0.23
-maximum P is    0.28649653543653
-image 6: a close up of a bunch of broccoli on a table
+ a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil0 nil0 nil0 nil0    logP1/16:-0.56 logP2/n:-0.65 P:0.55
+ a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() cutting() board(dining_tableboard0.00) nil9568 nil0 nil0 nil0   logP1/16:-0.56 logP2/n:-0.68 P:0.54
+ a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 nil0 nil0 nil0 logP1/16:-0.64 logP2/n:-0.65 P:0.52
+ a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() cutting() board(dining_tableboard0.00) nil9568 a() knife(screwdriver0.00) nil9568       logP1/16:-0.67 logP2/n:-1.41 P:0.38
+ a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() cutting() board(dining_tableboard0.00) nil9568 a() knife(screwdriver0.00) and() logP1/16:-0.68 logP2/n:-1.41 P:0.38
+ a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() counter() nil9568 nil0 nil0 nil0 nil0   logP1/16:-0.68 logP2/n:-0.03 P:0.74
+ a() close() up() of() a() bunch() of() broccoli(broccoli0.66) on() a() table(pool_tablebilliard_tablesnooker_table0.00) nil9568 nil9568 a() knife(screwdriver0.00) nil9568     logP1/16:-0.78 logP2/n:-1.38 P:0.36
+maximum P is    0.74110305309296
+image 6: a close up of a bunch of broccoli on a counter
 evaluating performance... 0/-1 (0.000000)
 loss:   nan
-
 
 
 

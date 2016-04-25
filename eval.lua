@@ -46,8 +46,13 @@ cmd:option('-backend', 'cudnn', 'nn|cudnn')
 cmd:option('-id', 'evalscript', 'an id identifying this run/job. used only if language_eval = 1 for appending to intermediate files')
 cmd:option('-seed', 123, 'random number generator seed to use')
 cmd:option('-gpuid', 0, 'which gpu to use. -1 = use CPU')
-cmd:option('-rerank', 'P1+P2', 'P1+P2|rank1+rank2  the reranking strategy.' )
+-- reranker
+cmd:option('-rerank', 'P1+P2', 'P1+P2|rank1+rank2|countHighProbObj  the reranking strategy.' )
+cmd:option('-high_prob_thres', 0.2, 'used by countHighProbObj strategy to define what a "high" probability is')
+cmd:option('-nn_similar_thres', 0.5, 'used by Reranker:NN_in_ImgNet() to filter out low-similarity ImgNet words')
+cmd:option('-consider_plural', 'Plu', 'noPlu|Plu, used by Reranker:NN_in_ImgNet(), deal with words ending with "s". If w="apples", treat both "apples" and "apple" as query')
 cmd:option('-reranker_debug_info', 1, '0|1 print verbose info for each beam-search sentence' )
+
 cmd:text()
 
 -------------------------------------------------------------------------------
@@ -137,10 +142,8 @@ local function eval_split(split, evalopt)
     -- forward the model to also get generated samples for each image
     local sample_opts = { sample_max = opt.sample_max, beam_size = opt.beam_size, temperature = opt.temperature }
     local seq, seqLogprobs, beams = protos.lm:sample(feats, sample_opts)
-    print('old:' , seq:size())
     -- rerank the beam search candidate 
     if(beams~=nil) then seq, seqLogprobs = reranker:rank(beams, data.images) end
-    print('new: ',seq:size())
     
     -- dump result
     local sents = net_utils.decode_sequence(vocab, seq)

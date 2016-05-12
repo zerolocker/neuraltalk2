@@ -3,15 +3,7 @@
 
 Recurrent Neural Network captions your images. Now much faster and better than the original [NeuralTalk](https://github.com/karpathy/neuraltalk). Compared to the original NeuralTalk this implementation is **batched, uses Torch, runs on a GPU, and supports CNN finetuning**. All of these together result in quite a large increase in training speed for the Language Model (~100x), but overall not as much because we also have to forward a VGGNet. However, overall very good models can be trained in 2-3 days, and they show a much better performance.
 
-This is an early code release that works great but is slightly hastily released and probably requires some code reading of inline comments (which I tried to be quite good with in general). I will be improving it over time but wanted to push the code out there because I promised it to too many people.
-
-This current code (and the pretrained model) gets ~0.9 CIDEr, which would place it around spot #8 on the [codalab leaderboard](https://competitions.codalab.org/competitions/3221#results). I will submit the actual result soon.
-
-![teaser results](https://raw.github.com/karpathy/neuraltalk2/master/vis/teaser.jpeg)
-
-You can find a few more example results on the [demo page](http://cs.stanford.edu/people/karpathy/neuraltalk2/demo.html). These results will improve a bit more once the last few bells and whistles are in place (e.g. beam search, ensembling, reranking).
-
-There's also a [fun video](https://vimeo.com/146492001) by [@kcimc](https://twitter.com/kcimc), where he runs a neuraltalk2 pretrained model in real time on his laptop during a walk in Amsterdam.
+We forked [NeuralTalk2](https://github.com/karpathy/neuraltalk2) and extend it by adding a CNN based reranker on top of the RNN.
 
 ### Requirements
 
@@ -46,6 +38,8 @@ $ luarocks install cunn
 ```
 
 If you'd like to use the cudnn backend (the pretrained checkpoint does), you also have to install [cudnn](https://github.com/soumith/cudnn.torch). First follow the link to [NVIDIA website](https://developer.nvidia.com/cuDNN), register with them and download the cudnn library. Then make sure you adjust your `LD_LIBRARY_PATH` to point to the `lib64` folder that contains the library (e.g. `libcudnn.so.7.0.64`). Then git clone the `cudnn.torch` repo, `cd` inside and do `luarocks make cudnn-scm-1.rockspec` to build the Torch bindings.
+
+The CNN reranker require word2vec pretrained model. Please follow the instruction in word2vec.torch to download the pretrained word2vec.
 
 #### For training
 
@@ -141,14 +135,15 @@ th convert_checkpoint_gpu_to_cpu.lua gpu_checkpoint.t7
 
 write the file `gpu_checkpoint.t7_cpu.t7`, which you can now run with `-gpuid -1` in the eval script.
 
+### Run experiments on the reranker
+`th eval.lua` to see command line argument.
+`sh forker.sh` to run experiments.
+
+
 ### License
 
 BSD License.
 
 ### Acknowledgements
 
-Parts of this code were written in collaboration with my labmate [Justin Johnson](http://cs.stanford.edu/people/jcjohns/). 
-
-I'm very grateful for [NVIDIA](https://developer.nvidia.com/deep-learning)'s support in providing GPUs that made this work possible.
-
-I'm also very grateful to the maintainers of Torch for maintaining a wonderful deep learning library.
+We appreciate Andrej Karpathy's release of [NeuralTalk2](https://github.com/karpathy/neuraltalk2), which inspires our work.
